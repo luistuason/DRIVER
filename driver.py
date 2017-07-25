@@ -28,7 +28,7 @@ csv_fieldnames = [
     "light"
 ]
 
-with open("driver.{0}".format("csv" if OUTPUT_IN_CSV else "json"), "w") as driver_file:
+with open("driver.{0}".format("csv" if OUTPUT_IN_CSV else "json"), "w", encoding='utf-8') as driver_file:
     if OUTPUT_IN_CSV:
         writer = csv.DictWriter(driver_file, fieldnames=csv_fieldnames, lineterminator='\n')
         writer.writeheader()
@@ -40,11 +40,11 @@ with open("driver.{0}".format("csv" if OUTPUT_IN_CSV else "json"), "w") as drive
                 data["lat"] = result["geom"]["coordinates"][1]
                 data["long"] = result["geom"]["coordinates"][0]
                 data["time"] = result["occurred_from"]
-                data["description"] = result["data"]["incidentDetails"].get("Description")
-                data["agency"] = result["data"]["incidentDetails"].get("Reporting Agency")
-                data["cause"] = result["data"]["incidentDetails"].get("Main cause")
-                data["collision_type"] = result["data"]["incidentDetails"].get("Collision type")
-                data["severity"] = ','.join(result["data"]["incidentDetails"]["Severity"])
+                data["description"] = result["data"].get("incidentDetails", {}).get("Description")
+                data["agency"] = result["data"].get("incidentDetails", {}).get("Reporting Agency")
+                data["cause"] = result["data"].get("incidentDetails", {}).get("Main cause")
+                data["collision_type"] = result["data"].get("incidentDetails", {}).get("Collision type")
+                data["severity"] = ','.join(result["data"].get("incidentDetails", {}).get("Severity"))
                 data["city"] = result["city"]
                 data["district"] = result["county"]
                 data["neighborhood"] = result["neighborhood"]
